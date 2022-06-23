@@ -1,5 +1,7 @@
 const asyncHandler = require("express-async-handler")
 const User = require("../models/userModel")
+const { generateRandomUsers } = require("../helpers/faker")
+require("./leaderboardController")
 
 // @desc    Get Users
 // @route   GET /api/users
@@ -40,6 +42,18 @@ const deleteUser = asyncHandler(async (req, res) => {
 
   res.status(200).json(deletedUser)
 })
+
+const addRandomUsersToDB = async (amount) => {
+  const users = generateRandomUsers(amount)
+  await User.create(users)
+}
+
+const deleteAllUsers = () => {
+  User.deleteMany({}, (err) => {
+    if (err) console.error(err)
+    else console.log("Removed all users")
+  })
+}
 
 module.exports = {
   getUsers,
