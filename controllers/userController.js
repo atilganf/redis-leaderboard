@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler")
 const User = require("../models/userModel")
 const { generateRandomUsers } = require("../helpers/faker")
-require("./leaderboardController")
 
 // @desc    Get Users
 // @route   GET /api/users

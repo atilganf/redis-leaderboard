@@ -16,7 +16,7 @@ const createRandomUser = () => {
   };
 }
 
-const randomScore = (digits) => {
+const randomMoney = (digits) => {
   return faker.datatype.number({ max: 10 ** digits })
 }
 
@@ -38,10 +38,10 @@ const generateNewUserDB = (amount) => {
   })
 }
 
-// generateNewUserDB(100000)
+// generateNewUserDB(10000)
 
 module.exports = {
   generateRandomUsers,
   createRandomUser,
-  randomScore
+  randomMoney
 }

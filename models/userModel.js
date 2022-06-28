@@ -9,6 +9,14 @@ const userSchema = mongoose.Schema({
   country: {
     type: String,
     required: [true, "Please add a country"]
+  },
+  total_money: {
+    type: Number,
+    default: 0
+  },
+  daily_rank: {
+    type: Number,
+    default: 0
   }
 })
 
