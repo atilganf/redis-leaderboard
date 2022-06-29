@@ -5,13 +5,20 @@ const RL = new RedisLeaderboard()
 const giveRandomMoney = async () => {
   const users = await RL.getUsers(false)
 
-  await Promise.all(users.map(user => {
+  let prizePoolMoney = 0
+  let userMoneyHash = {}
+  
+  for (let user of users) {
     const money = getDeduction(randomMoney(3), 2)
+    userMoneyHash[user] = money.remaining
+    prizePoolMoney += money.deduction
+  }
 
-    RL.increasePrizePool(money.deduction)
-
-    RL.increaseScore(user, money.remaining)
+  await Promise.all(users.map(user => {
+    RL.increaseScore(user, userMoneyHash[user])
   }))
+
+  await RL.increasePrizePool(prizePoolMoney)
 
   return "success"
 }
