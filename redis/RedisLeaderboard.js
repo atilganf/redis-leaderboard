@@ -112,7 +112,7 @@ class RedisLeaderboard {
   }
 
   async setMultipleDailyRanks(nameRankHash){
-    redis.hset(this.dailyRankKey, nameRankHash)
+    redis.hset(this.dailyRankKey, nameRankHash).then((err, res) => console.log(err, res))
   }
 
   // DB functions

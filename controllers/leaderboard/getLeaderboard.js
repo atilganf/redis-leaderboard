@@ -25,8 +25,8 @@ const getLeaderboard = async () => {
     user: randomUser,
     prizepool: prizepool,
     count: userCount,
+    topUsers: topUsers,
     range: userRange,
-    topUsers: topUsers
   }
 
   return leaderboardData

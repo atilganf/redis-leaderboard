@@ -11,13 +11,13 @@ const finishDay = async () => {
 const updateDailyRank = async () => {
   const names = await RL.getUsers(false)
   
-  const nameRankHash = names.map((username, index) => {
-    let hashObj = {}
-    hashObj[username] = index
-    return hashObj
+  let namesRankHash = {}
+  
+  names.forEach((username, index) => {
+    namesRankHash[username] = index
   })
 
-  await RL.setMultipleDailyRanks(nameRankHash)
+  RL.setMultipleDailyRanks(namesRankHash)
 }
 
 module.exports = finishDay
