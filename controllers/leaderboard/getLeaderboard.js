@@ -29,8 +29,6 @@ const getLeaderboard = async () => {
     topUsers: topUsers
   }
 
-  console.log("Time Test Finished".bgBlue)
-
   return leaderboardData
 }
 

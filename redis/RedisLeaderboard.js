@@ -50,6 +50,15 @@ class RedisLeaderboard {
     await redis.zincrby(this.key, increase, username)
   }
 
+  async updateMultiple(names, scores) {
+    let scoreNameArray = []
+    names.forEach((username, index) => {
+      scoreNameArray.push(scores[index])
+      scoreNameArray.push(username)
+    })
+    await redis.zadd(this.key, "XX", scoreNameArray)
+  }
+
   async getRank(username) {
     return redis.zrevrank(this.key, username)
   }

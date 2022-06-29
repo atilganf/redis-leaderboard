@@ -3,21 +3,21 @@ const { randomMoney } = require("../../helpers/faker")
 const RL = new RedisLeaderboard()
 
 const giveRandomMoney = async () => {
-  const users = await RL.getUsers(false)
+  const users = await RL.getUsers(true)
+  let scores = getScores(users)
+  let names = getNames(users)
 
   let prizePoolMoney = 0
-  let userMoneyHash = {}
   
-  for (let user of users) {
+  scores = scores.map(score => {
     const money = getDeduction(randomMoney(3), 2)
-    userMoneyHash[user] = money.remaining
+
     prizePoolMoney += money.deduction
-  }
+    score = parseInt(score) + money.remaining
+    return score
+  })
 
-  await Promise.all(users.map(user => {
-    RL.increaseScore(user, userMoneyHash[user])
-  }))
-
+  await RL.updateMultiple(names, scores)
   await RL.increasePrizePool(prizePoolMoney)
 
   return "success"
@@ -31,6 +31,21 @@ const getDeduction = (number, percent) => {
     remaining,
     deduction
   }
+}
+
+
+const getNames = (redisArray) => {
+  const usernames = redisArray.filter((el, index) => {
+    return index % 2 === 0
+  })
+  return usernames
+}
+
+const getScores = (redisArray) => {
+  const scores = redisArray.filter((el, index) => {
+    return index % 2 === 1
+  })
+  return scores
 }
 
 module.exports = giveRandomMoney
