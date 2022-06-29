@@ -2,7 +2,6 @@ const User = require("../../models/userModel")
 const RedisLeaderboard = require("../../redis/RedisLeaderboard")
 const RL = new RedisLeaderboard()
 
-
 const finishDay = async () => {
   await updateDailyRank()
 
@@ -11,11 +10,14 @@ const finishDay = async () => {
 
 const updateDailyRank = async () => {
   const names = await RL.getUsers(false)
+  
+  const nameRankHash = names.map((username, index) => {
+    let hashObj = {}
+    hashObj[username] = index
+    return hashObj
+  })
 
-  Promise.all(names.map(async (name) => {
-    const rank = await RL.getRank(name)
-    RL.setDailyRank(name, rank)
-  }))
+  await RL.setMultipleDailyRanks(nameRankHash)
 }
 
 module.exports = finishDay

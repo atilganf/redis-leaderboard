@@ -111,6 +111,10 @@ class RedisLeaderboard {
     redis.hset(this.dailyRankKey, rankObj)
   }
 
+  async setMultipleDailyRanks(nameRankHash){
+    redis.hset(this.dailyRankKey, nameRankHash)
+  }
+
   // DB functions
   async resetPrizePool() {
     redis.set(this.prizePoolKey, 0)
