@@ -12,7 +12,7 @@ const generateRandomUsers = (amount) => {
 const createRandomUser = () => {
   return {
     name: faker.unique(faker.internet.userName),
-    country: faker.address.country()
+    country: faker.address.countryCode()
   };
 }
 

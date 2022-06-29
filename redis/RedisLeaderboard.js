@@ -88,8 +88,12 @@ class RedisLeaderboard {
   }
 
   // DailyRank Methods
-  async getDailyRanks() {
+  async getAllDailyRanks() {
     return redis.hgetall(this.dailyRankKey)
+  }
+
+  async getDailyRanks(nameArray) {
+    return redis.hmget(this.dailyRankKey, nameArray)
   }
 
   async setDailyRank(username, daily_rank) {

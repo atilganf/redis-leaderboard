@@ -5,11 +5,8 @@ const RL = new RedisLeaderboard()
 
 const finishWeek = async () => {
   RL.setPrizePool(10000000)
-  const distrubute = await distrubutePrizePool()
+  await distrubutePrizePool()
   await resetLeaderboard()
-
-  const user = await User.find({ name: "Lisandro_Daniel" })
-  return { user, distrubute }
 }
 
 const distrubutePrizePool = async () => {

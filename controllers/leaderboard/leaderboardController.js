@@ -9,34 +9,55 @@ const giveRandomMoneyFunc = require("./giveRandomMoney")
 const finishWeekFunc = require("./finishWeek")
 const RL = new RedisLeaderboard()
 
-// How many players to show above and below
 
-// ******************** GET LEADERBOARD ********************** // 
 const getLeaderboard = asyncHandler(async (req, res) => {
-  // await resetAndsetUsers()
-  const leadData = await getLeaderboardData()
+  try {
+    // await resetAndsetUsers()
+    const leadData = await getLeaderboardData()
+    res.json(leadData)
 
-  res.json(leadData)
+  } catch (error) {
+    console.error(error)
+    res.json({ error: error })
+  }
 })
 
 const finishDay = asyncHandler(async (req, res) => {
-  const result = await finishDayFunc()
+  try {
+    const result = await finishDayFunc()
+    res.json(result)
 
-  res.json(result)
+  } catch (error) {
+    console.error(error);
+    res.json("error")
+  }
 })
 
 const giveRandomMoney = asyncHandler(async (req, res) => {
-  const result = await giveRandomMoneyFunc()
+  try {
+    const result = await giveRandomMoneyFunc()
+    res.json(result)
 
-  res.json(result)
+  } catch (error) {
+    console.error(error);
+    res.json("error")
+  }
 })
 
 const finishWeek = asyncHandler(async (req, res) => {
-  const result = await finishWeekFunc()
+  try {
+    const result = await finishWeekFunc()
+    res.json(result)
 
-  res.json(result)
+  } catch (error) {
+    console.error(error);
+    res.json("error")
+  }
 })
 
+// setInterval(() => {
+//   giveRandomMoneyFunc()
+// }, 15000)
 
 
 const resetAndsetUsers = async () => {

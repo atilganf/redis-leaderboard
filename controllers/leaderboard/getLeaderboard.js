@@ -1,40 +1,48 @@
 const User = require("../../models/userModel")
 const RedisLeaderboard = require("../../redis/RedisLeaderboard")
 const RL = new RedisLeaderboard()
+const colors = require("colors")
 
 const getLeaderboard = async () => {
-  // const randomUserName = await RL.getRandomUser()
-  const randomUserName = "Lisandro_Daniel"
+  // const randomUser = await RL.getRandomUser()
+  const randomUser = "Sydnee_Hayes"
   const userRangeConfig = { top: 3, bottom: 2 }
 
-
-  const [userRangeRedis, topUsersRedis, randomUser] = await Promise.all([
-    getUserRange(randomUserName, userRangeConfig),
+  const [userRangeRedis, topUsersRedis, randomUserRank] = await Promise.all([
+    getUserRange(randomUser, userRangeConfig),
     RL.getTop(),
-    RL.getRankWithName(randomUserName)
+    RL.getRank(randomUser),
   ])
 
-  const [topUsers, userRange, prizepool] = await Promise.all([
+  const [topUsers, userRange, prizepool, userCount] = await Promise.all([
     getUserData(topUsersRedis, 0),
-    getUserData(userRangeRedis, randomUser.rank - userRangeConfig.top),
-    RL.getPrizePool()
+    getUserData(userRangeRedis, randomUserRank - userRangeConfig.top),
+    RL.getPrizePool(),
+    RL.getCount()
   ])
 
   const leaderboardData = {
     user: randomUser,
     prizepool: prizepool,
+    count: userCount,
     range: userRange,
     topUsers: topUsers
   }
+
+  console.log("Time Test Finished".bgBlue)
 
   return leaderboardData
 }
 
 const getUserData = async (redisArray, startRank) => {
   const names = getUserNames(redisArray)
-  const countries = await getCountries(names)
+
+  const [countries, dailyRanks] = await Promise.all([
+    getCountries(names),
+    RL.getDailyRanks(names)
+  ])
+
   const namesAndScores = getScores(redisArray)
-  const dailyRanks = await RL.getDailyRanks()
 
   usersHash = countries.reduce((obj, user) => {
     obj[user.name] = user.country;
@@ -48,7 +56,7 @@ const getUserData = async (redisArray, startRank) => {
       ...user,
       country: usersHash[user.name],
       rank: rank,
-      diff: rank - dailyRanks[user.name]
+      diff: dailyRanks[index] - rank
     }
   })
 
@@ -64,10 +72,12 @@ const getUserNames = (redisArray) => {
 
 // @desc: returns name, country and daily_diff 
 const getCountries = (namesArray) => {
-  return User.find(
+
+  const countries = User.find(
     { "name": { $in: namesArray } },
     "name country -_id"
   )
+  return countries
 }
 
 const getScores = (redisArray) => {
