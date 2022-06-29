@@ -4,15 +4,17 @@ const RL = new RedisLeaderboard()
 
 
 const finishWeek = async () => {
-  RL.setPrizePool(10000000)
+  await RL.setPrizePool(10000000)
+  
   await distrubutePrizePool()
+
   await resetLeaderboard()
 }
 
 const distrubutePrizePool = async () => {
   const users = await RL.getUsers(false)
 
-  const prizeHash = await createNamePrizeHash()
+  const prizeHash = await createNamePrizeHash(users)
 
   const bulkOperations = users.map(user => {
     return {
@@ -23,14 +25,13 @@ const distrubutePrizePool = async () => {
     }
   })
 
-  const bulkUpdate = await User.bulkWrite(bulkOperations)
+  await User.bulkWrite(bulkOperations)
   
   return "success"
 }
 
-const createNamePrizeHash = async () => {
+const createNamePrizeHash = async (users) => {
   const pool = await RL.getPrizePool()
-  const users = await RL.getUsers()
 
   const hash = {}
   hash[users[0].name] = getPercentage(pool, 20)

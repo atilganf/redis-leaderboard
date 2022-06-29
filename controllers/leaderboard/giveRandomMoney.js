@@ -1,6 +1,7 @@
 const RedisLeaderboard = require("../../redis/RedisLeaderboard")
 const { randomMoney } = require("../../helpers/faker")
 const RL = new RedisLeaderboard()
+const User = require("../../models/userModel")
 
 const giveRandomMoney = async () => {
   const users = await RL.getUsers(true)
@@ -19,6 +20,17 @@ const giveRandomMoney = async () => {
 
   await RL.updateMultiple(names, scores)
   await RL.increasePrizePool(prizePoolMoney)
+
+  const bulkOperations = names.map((name, index) => {
+    return {
+      updateOne: {
+        filter: { name: name },
+        update: { $inc: { total_money: scores[index] } }
+      }
+    }
+  })
+
+  await User.bulkWrite(bulkOperations)
 
   return "success"
 }

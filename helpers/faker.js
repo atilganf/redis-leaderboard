@@ -38,7 +38,7 @@ const generateNewUserDB = (amount) => {
   })
 }
 
-// generateNewUserDB(10000)
+// generateNewUserDB(100000)
 
 module.exports = {
   generateRandomUsers,

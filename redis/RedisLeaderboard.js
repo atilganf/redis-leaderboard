@@ -112,7 +112,7 @@ class RedisLeaderboard {
   }
 
   async setMultipleDailyRanks(nameRankHash){
-    redis.hset(this.dailyRankKey, nameRankHash).then((err, res) => console.log(err, res))
+    redis.hset(this.dailyRankKey, nameRankHash)
   }
 
   // DB functions
@@ -122,11 +122,14 @@ class RedisLeaderboard {
 
   async resetDailyRanks() {
     const names = await this.getUsers(false)
+  
+    let namesRankHash = {}
+    
+    names.forEach((username, index) => {
+      namesRankHash[username] = index
+    })
 
-    Promise.all(names.map(async (name) => {
-      const rank = await this.getRank(name)
-      this.setDailyRank(name, rank)
-    }))
+    this.setMultipleDailyRanks(namesRankHash)
   }
 
   async resetScores() {
