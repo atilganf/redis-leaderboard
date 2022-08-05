@@ -4,8 +4,9 @@ const RL = new RedisLeaderboard()
 const colors = require("colors")
 
 const getLeaderboard = async () => {
+  const randomRank = await RL.getCount() / 2
+  const randomUser = await RL.getUserFromRank(randomRank)
   // const randomUser = await RL.getRandomUser()
-  const randomUser = "Sydnee_Hayes"
   const userRangeConfig = { top: 3, bottom: 2 }
 
   const [userRangeRedis, topUsersRedis, randomUserRank] = await Promise.all([

@@ -17,6 +17,11 @@ class RedisLeaderboard {
     return await redis.zrandmember(this.key)
   }
 
+  async getUserFromRank(rank) {
+    const user = await this.getRange(rank, rank, false)
+    return user[0]
+  }
+
   async addUser(username, score) {
     await redis.zadd(this.key, score, username)
   }
@@ -111,7 +116,7 @@ class RedisLeaderboard {
     redis.hset(this.dailyRankKey, rankObj)
   }
 
-  async setMultipleDailyRanks(nameRankHash){
+  async setMultipleDailyRanks(nameRankHash) {
     redis.hset(this.dailyRankKey, nameRankHash)
   }
 
@@ -122,9 +127,9 @@ class RedisLeaderboard {
 
   async resetDailyRanks() {
     const names = await this.getUsers(false)
-  
+
     let namesRankHash = {}
-    
+
     names.forEach((username, index) => {
       namesRankHash[username] = index
     })

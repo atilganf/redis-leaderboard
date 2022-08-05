@@ -9,10 +9,8 @@ const giveRandomMoneyFunc = require("./giveRandomMoney")
 const finishWeekFunc = require("./finishWeek")
 const RL = new RedisLeaderboard()
 
-
 const getLeaderboard = asyncHandler(async (req, res) => {
   try {
-    // await resetAndsetUsers()
     const leadData = await getLeaderboardData()
     res.json(leadData)
 
@@ -61,17 +59,18 @@ const finishWeek = asyncHandler(async (req, res) => {
 
 
 const resetAndsetUsers = async () => {
-  await RL.deleteDB()
   await RL.resetPrizePool()
-  await RL.resetDailyRanks()
+  await RL.deleteDB()
   const users = await User.find({}, "name")
-
-  Promise.all(users.map(async (user) => {
-    await RL.addUser(user.name, randomMoney(5))
+  
+  await Promise.all(users.map(async (user) => {
+    RL.addUser(user.name, randomMoney(5))
     const rank = await RL.getRank(user.name)
     RL.setDailyRank(user.name, rank)
   }))
 }
+
+// resetAndsetUsers().then(res => console.log("success"))
 
 module.exports = {
   getLeaderboard,

@@ -45,7 +45,6 @@ const getDeduction = (number, percent) => {
   }
 }
 
-
 const getNames = (redisArray) => {
   const usernames = redisArray.filter((el, index) => {
     return index % 2 === 0
